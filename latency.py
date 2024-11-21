@@ -1,4 +1,4 @@
-from arb_package.exchange_config import *
+from exchange_config import *
 import sys
 
 echanges_str=[sys.argv[1],sys.argv[2],sys.argv[3]]

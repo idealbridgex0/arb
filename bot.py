@@ -7,7 +7,7 @@ import sys
 from colorama import Fore, Back, Style,init
 import threading
 init()
-from arb_package.exchange_config import *
+from exchange_config import *
 
 stop_requested = False
 

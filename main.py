@@ -4,7 +4,7 @@ import sys,ccxt
 import os
 from colorama import Style, init, Fore
 init()
-from arb_package.exchange_config import *
+from exchange_config import *
 sys.stdin.reconfigure(encoding="utf-8")
 sys.stdout.reconfigure(encoding="utf-8")
 print('''
