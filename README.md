@@ -21,16 +21,15 @@
 
   cd arb
 
-3. Build as Package
+3. Install the requirements to run the arbitrage system
 
-  pip install  -e .
+  pip install  -r requirements.txt
 
 4. Set your configuration details in exchange_config.py
 
 5. Run with:
 
-  Python -m arb.run 
-
+  Python run.py
 ```
 
 ## How to add an exchange?
