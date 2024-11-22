@@ -5,7 +5,7 @@ setup(
     version="0.1",
     packages=find_packages(),
     install_requires=[
-        "ccxt==4.0.42",
+        "ccxt",
         "colorama==0.4.6",
         "requests==2.31.0",
        " pytz==2023.3",
