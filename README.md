@@ -15,11 +15,11 @@
 
 1. Clone the repository
   
-  git clone https://github.com/idealbridgex0/fam-arbitrage-bot.git
+  git clone https://github.com/idealbridgex0/arb.git
 
 2. Go to the repository you just cloned
 
-  cd fam-arbitrage-bot
+  cd arb
 
 3. Build as Package
 
@@ -29,7 +29,7 @@
 
 5. Run with:
 
-  Python -m arbitrage.run 
+  Python -m arb.run 
 
 ```
 
