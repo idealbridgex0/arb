@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: arb_package
-Version: 0.1
-License-File: LICENSE
-Requires-Dist: ccxt==4.0.42
-Requires-Dist: colorama==0.4.6
-Requires-Dist: requests==2.31.0
-Requires-Dist: pytz==2023.3
