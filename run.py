@@ -115,7 +115,7 @@ F       A     A  M     M
                 else:
                     printerror(m=f'please put the file "bot-fake-money.py" in the current directory.')
             elif mode == "real":
-                if os.path.exists('bot.py'):
+                if os.path.exists(bot_path):
                     p=subprocess.run([python_command,bot_path,symbol,balance,renew_time,symbol,ex_list])
                 else:
                     printerror(m=f'please put the file "bot.py" in the current directory.')
