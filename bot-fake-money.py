@@ -7,7 +7,7 @@ import os
 from colorama import Fore, Back, Style,init
 import threading
 init()
-from arb_package.exchange_config import *
+from exchange_config import *
 bid_prices = {}
 ask_prices = {}
 total_change_usd = 0
