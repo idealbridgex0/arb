@@ -11,6 +11,7 @@ renewal = False
 delta_neutral = False
 timezone = 'Europe/Paris'
 python_command = 'python3'
+current_dir = os.path.dirname(os.path.abspath(__file__))
 logs_path = os.path.join(current_dir, logs_path)
 
 

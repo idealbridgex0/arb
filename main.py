@@ -19,7 +19,7 @@ print('''
                                                                                                                      ''')
 args = sys.argv
 mode = args[1]
-
+current_dir = os.path.dirname(os.path.abspath(__file__))
 usable_balance_path = os.path.join(current_dir, "usable_balance.txt")
 total_balance_path = os.path.join(current_dir, "total_balance.txt")
 fake_money_path = os.path.join(current_dir, "bot-fake-money.py")

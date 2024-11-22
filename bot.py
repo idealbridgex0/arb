@@ -11,6 +11,7 @@ init()
 from exchange_config import *
 
 stop_requested = False
+current_dir = os.path.dirname(os.path.abspath(__file__))
 logs_path = os.path.join(current_dir, 'logs/logs.txt')
 
 def listen_for_exit():
