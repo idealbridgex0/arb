@@ -20,9 +20,10 @@ total_balance_path = os.path.join(current_dir, "total_balance.txt")
 fake_money_path = os.path.join(current_dir, "bot-fake-money.py")
 bot_path = os.path.join(current_dir, "bot.py")
 main_path = os.path.join(current_dir, "main.py")
+logs_path = os.path.join(current_dir, "logs/logs.txt")
 
 print(f"**************** {fake_money_path}")
-
+s
 try:
     if len(sys.argv) < 3:
         input_list = ["mode (fake-money or real)", "renewal period (in minutes)", "balance to use", "symbol", "exchanges list separated without space with commas (,)"]
@@ -131,7 +132,7 @@ except KeyboardInterrupt:
         answered = False
         while answered == False:
             inp = input(f"{get_time()} CTRL+C was pressed. Do you want to sell all crypto back? (y)es / (n)o\n \ninput: ")
-            append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: ctrl+c was pressed.")
+            append_new_line(logs_path,f"{get_time_blank()} INFO: ctrl+c was pressed.")
             if inp.lower() == "y" or inp.lower() == "yes":
                 answered = True
                 emergency_convert_list(symbol,[ex_list.split(',')[i] for i in range(len(ex_list.split(',')))])

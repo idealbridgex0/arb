@@ -3,6 +3,7 @@ import requests
 import pytz
 from colorama import Style,Fore
 import datetime
+import os
 
 # The bot seems complicated? It's not, just try! (and contact me if you have an error, it's probably a silly one :)
 
@@ -10,6 +11,8 @@ renewal = False
 delta_neutral = False
 timezone = 'Europe/Paris'
 python_command = 'python3'
+logs_path = os.path.join(current_dir, logs_path)
+
 
 exchanges = {
     'kucoin':{},
@@ -92,15 +95,15 @@ def append_new_line(file_name, text_to_append):
 def printerror(**args):
     if 'm' in list(args.keys()):
         print(f"{get_time()}{Fore.RED}{Style.BRIGHT}Error: {args['m']}{Style.RESET_ALL}")
-        append_new_line("logs/logs.txt",f"{get_time_blank()} ERROR: {args['m']}")
+        append_new_line(logs_path,f"{get_time_blank()} ERROR: {args['m']}")
     else:
         print(f"{get_time()}{Fore.RED}{Style.BRIGHT}Error.{Style.RESET_ALL}")
 
     if 'name_of_data' in list(args.keys()) and 'data' in list(args.keys()) and 'm' in list(args.keys()):
-        append_new_line("logs/logs.txt",f"{get_time_blank()} ERROR: {args['m']} | {args['name_of_data']}: {args['data']}")
+        append_new_line(logs_path,f"{get_time_blank()} ERROR: {args['m']} | {args['name_of_data']}: {args['data']}")
 
     elif 'name_of_data' in list(args.keys()) and 'data' in list(args.keys()):
-        append_new_line("logs/logs.txt",f"{get_time_blank()} ERROR | {args['name_of_data']}: {args['data']}")
+        append_new_line(logs_path,f"{get_time_blank()} ERROR | {args['name_of_data']}: {args['data']}")
 def emergency_convert_list(pair_to_sell,exlist):
     i=0
     for echange in exlist:
@@ -108,7 +111,7 @@ def emergency_convert_list(pair_to_sell,exlist):
             if ex[echange].has['cancelAllOrders'] and ex[echange].fetchOpenOrders(pair_to_sell) != []:
                 ex[echange].cancelAllOrders(pair_to_sell)
                 print(f"{get_time()} Successfully canceled all orders on {echange}.")
-                append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: successfully canceled all orders on {echange}.")
+                append_new_line(logs_path,f"{get_time_blank()} INFO: successfully canceled all orders on {echange}.")
             bal = get_balance(echange,pair_to_sell)
             m = ex[echange].load_markets()
             t=ex[echange].fetch_ticker(pair_to_sell)
@@ -119,10 +122,10 @@ def emergency_convert_list(pair_to_sell,exlist):
             if (bal>(m[pair_to_sell]['limits']['cost']['min']/float(t['last'])) and bal>m[pair_to_sell]['limits']['amount']['min']) and (bal<(m[pair_to_sell]['limits']['cost']['max']/float(t['last'])) and bal<m[pair_to_sell]['limits']['amount']['max']):
                 ex[echange].createMarketSellOrder(symbol=pair_to_sell,amount=bal)
                 print(f"{get_time()} Successfully sold {bal} {pair_to_sell[:len(pair_to_sell)-5]} on {echange}.")
-                append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: Successfully sold {bal} {pair_to_sell[:len(pair_to_sell)-5]} on {echange}.")
+                append_new_line(logs_path,f"{get_time_blank()} INFO: Successfully sold {bal} {pair_to_sell[:len(pair_to_sell)-5]} on {echange}.")
             else: 
                 print(f"{get_time()} Not enough {pair_to_sell[:len(pair_to_sell)-5]} on {echange}.")
-                append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: Successfully sold {bal} {pair_to_sell[:len(pair_to_sell)-5]} on {echange}.")
+                append_new_line(logs_path,f"{get_time_blank()} INFO: Successfully sold {bal} {pair_to_sell[:len(pair_to_sell)-5]} on {echange}.")
             i+=1
         except Exception as e:
             printerror(m=f'{get_time()} Error while selling {pair_to_sell} on {echange}. Error: {e}',)

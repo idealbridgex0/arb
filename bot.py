@@ -4,12 +4,14 @@ import ccxt.pro
 from delta_neutral_config import *
 import ccxt.async_support
 import sys
+import os
 from colorama import Fore, Back, Style,init
 import threading
 init()
 from exchange_config import *
 
 stop_requested = False
+logs_path = os.path.join(current_dir, 'logs/logs.txt')
 
 def listen_for_exit():
     global stop_requested
@@ -96,11 +98,11 @@ async def execute_trades(ex, max_bid_ex, min_ask_ex, currentPair, crypto_per_tra
                     sys.exit(1)
         actual_max_bid_price = market_sell_order['price']
         printandtelegram(f"{get_time()} Sell market order filled on {max_bid_ex} for {crypto_per_transaction} {currentPair.split('/')[0]} at {market_sell_order['price']}.")
-        append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: sell market order filled on {max_bid_ex} for {crypto_per_transaction} {currentPair.split("/")[0]} at {market_sell_order["price"]}.')
+        append_new_line(logs_path,f'{get_time_blank()} INFO: sell market order filled on {max_bid_ex} for {crypto_per_transaction} {currentPair.split("/")[0]} at {market_sell_order["price"]}.')
         return actual_max_bid_price
     except Exception as e:
         printandtelegram(f"Error executing sell order on {max_bid_ex}: {e}")
-        append_new_line('logs/logs.txt', f'{get_time_blank()} ERROR: {e}')
+        append_new_line(logs_path, f'{get_time_blank()} ERROR: {e}')
         sys.exit(1)
         return None
 
@@ -145,7 +147,7 @@ async def execute_trades(ex, max_bid_ex, min_ask_ex, currentPair, crypto_per_tra
                 sys.exit(1)
     actual_min_ask_price = market_buy_order['price']
     printandtelegram(f"{get_time()} Buy market order filled on {min_ask_ex} for {crypto_per_transaction} {currentPair.split('/')[0]} at {market_buy_order['price']}.")
-    append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: buy market order filled on {min_ask_ex} for {crypto_per_transaction} {currentPair.split('/')[0]} at {market_buy_order['price']}.")
+    append_new_line(logs_path,f"{get_time_blank()} INFO: buy market order filled on {min_ask_ex} for {crypto_per_transaction} {currentPair.split('/')[0]} at {market_buy_order['price']}.")
     return actual_min_ask_price
 
   # Execute buy and sell orders concurrently
@@ -166,7 +168,7 @@ try:
 
     if minimum_volume > ticker['quoteVolume']:
         print(f"{currentPair}'s volume is less than {minimum_volume} Breaking.")
-        append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: {currentPair}'s volume is less than {minimum_volume}. Breaking.")
+        append_new_line(logs_path,f"{get_time_blank()} INFO: {currentPair}'s volume is less than {minimum_volume}. Breaking.")
         sys.exit(1)
 except Exception as e:
     printerror(m=f"error while fetching base volume of {currentPair}. Error: {e}")
@@ -183,7 +185,7 @@ while ordersFilled != len(echanges):
             s=1
         else:
             printandtelegram(f'{Style.DIM}[{time.strftime("%H:%M:%S", time.gmtime(time.time()))}]{Style.RESET_ALL} {n} balance OK')
-            append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: {n} balance OK')
+            append_new_line(logs_path,f'{get_time_blank()} INFO: {n} balance OK')
 
     if s==1:
         sys.exit(1)
@@ -204,7 +206,7 @@ while ordersFilled != len(echanges):
         average_first_buy_price = moy(all_tickers)
         total_crypto = (howmuchusd/2)/average_first_buy_price
         printandtelegram(f"{get_time()} Average {currentPair} price in {endPair}: {average_first_buy_price}")
-        append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: average {currentPair} price in {endPair}: {average_first_buy_price}')
+        append_new_line(logs_path,f'{get_time_blank()} INFO: average {currentPair} price in {endPair}: {average_first_buy_price}')
 
     except Exception as e:
         printerror(m=f"error while fetching average prices. Error: {e}")
@@ -218,7 +220,7 @@ while ordersFilled != len(echanges):
     i=0
     for n in echanges:
         n.createLimitBuyOrder(currentPair,total_crypto/len(echanges),average_first_buy_price)
-        append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: buy limit order of {round(total_crypto/len(echanges),3)} {currentPair.split("/")[0]} at {average_first_buy_price} sent to {echanges_str[i]}.')
+        append_new_line(logs_path,f'{get_time_blank()} INFO: buy limit order of {round(total_crypto/len(echanges),3)} {currentPair.split("/")[0]} at {average_first_buy_price} sent to {echanges_str[i]}.')
         printandtelegram(f'{get_time()} Buy limit order of {round(total_crypto/len(echanges),3)} {currentPair.split("/")[0]} at {average_first_buy_price} sent to {echanges_str[i]}.')
         i+=1
 
@@ -231,13 +233,13 @@ while ordersFilled != len(echanges):
             order=ex[exc].fetchOpenOrders(symbol=currentPair)
             if order == [] and already_filled.count(exc) == 0:
                 printandtelegram(f"{get_time()} {exc} order filled.")
-                append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: {exc} order filled.')
+                append_new_line(logs_path,f'{get_time_blank()} INFO: {exc} order filled.')
                 ordersFilled+=1
                 already_filled.append(exc)
         time.sleep(1.8)
         zz+=1
     if zz>= first_orders_fill_timeout*60*0.5:
-        append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: one or more order(s) not filled in approximately {first_orders_fill_timeout} minutes. Cancelling the order(s) and selling the filled amounts.')
+        append_new_line(logs_path,f'{get_time_blank()} INFO: one or more order(s) not filled in approximately {first_orders_fill_timeout} minutes. Cancelling the order(s) and selling the filled amounts.')
         print(f"{get_time()} One or more order(s) not filled in approximately {first_orders_fill_timeout} minutes. Cancelling the order(s) and selling the filled amounts.")
         emergency_convert_list(currentPair,already_filled)
         for exch in echanges_str:
@@ -247,7 +249,7 @@ while ordersFilled != len(echanges):
                     open_orders = ex[exch].fetchOpenOrders(currentPair)
                     ex[exch].cancelOrder(open_orders[len(open_orders)-1]['id'],currentPair)
                     print(f"{get_time()} {exc} order successfully cancelled.")
-                    append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: {exc} order successfully cancelled.')
+                    append_new_line(logs_path,f'{get_time_blank()} INFO: {exc} order successfully cancelled.')
                 except Exception as e:
                     printerror(m=f"error while cancelling the non-filled orders. Error: {e}")
         already_filled=[]
@@ -261,10 +263,10 @@ if delta_neutral:
         sys.exit(1)
     order = shex.createMarketSellOder(currentPair+f":{endPair}",usd_to_short)
     print(f"{get_time()} short order successfully placed on {futures_exchange}, pair: {currentPair+f':{endPair}'}, amount: {usd_to_short}, filled price: {order['average']}.")
-    append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: short order successfully placed on {futures_exchange}, pair: {currentPair+f':{endPair}'}, amount: {usd_to_short}, filled price: {order['average']}.")
+    append_new_line(logs_path,f"{get_time_blank()} INFO: short order successfully placed on {futures_exchange}, pair: {currentPair+f':{endPair}'}, amount: {usd_to_short}, filled price: {order['average']}.")
 
 printandtelegram(f"{get_time()} Starting the bot with parameters: {[n for n in sys.argv]}")
-append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: starting program with parameters: {[n for n in sys.argv]}')
+append_new_line(logs_path,f'{get_time_blank()} INFO: starting program with parameters: {[n for n in sys.argv]}')
 prec_time = '0000000'
 min_ask_price = 0
 if not renewal:
@@ -279,7 +281,7 @@ async def symbol_loop(exchange, symbol):
             sys.stdout.write("\033[K")
             print(f"{get_time()} Manual rebalance requested. Breaking.")
             await exchange.close()
-            append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: Manual rebalance requested. Breaking.")
+            append_new_line(logs_path,f"{get_time_blank()} INFO: Manual rebalance requested. Breaking.")
             timeout -= 100000000000
             break
         orderbook = await fetch_orderbook(exchange,symbol)
@@ -320,7 +322,7 @@ async def symbol_loop(exchange, symbol):
             for exc in echanges_str:
                 ex_balances+=f"\n{exc}: {round(crypto[exc],3)} {currentPair.split('/')[0]} / {round(usd[exc],2)} {endPair}"
             print(f"{Style.RESET_ALL}Opportunity n°{i} detected! ({min_ask_ex} {min_ask_price}   ->   {max_bid_price} {max_bid_ex})\n \nExcepted profit: +{round(change_usd,4)} {endPair}{Style.RESET_ALL}\n \nSession total profit: {Fore.GREEN}+{round((total_change_usd/100)*howmuchusd,4)} {endPair} {Style.RESET_ALL}\n \nFees paid: {Fore.RED}-{round(fees_usd,4)} {endPair}      -{round(fees_crypto,4)} {currentPair.split('/')[0]}\n \n{Style.RESET_ALL}{Style.DIM} {ex_balances}\n \n{Style.RESET_ALL}Time elapsed since the beginning of the session: {time.strftime('%H:%M:%S', time.gmtime(time.time()-st))}\n \n{Style.RESET_ALL}-----------------------------------------------------\n \n")
-            append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: new arbitrage opportunity: {min_ask_ex} {min_ask_price} -> {max_bid_price} {max_bid_ex} with an excepted profit of {change_usd} {endPair}')
+            append_new_line(logs_path,f'{get_time_blank()} INFO: new arbitrage opportunity: {min_ask_ex} {min_ask_price} -> {max_bid_price} {max_bid_ex} with an excepted profit of {change_usd} {endPair}')
             send_to_telegram(f"[{indicatif} Trade n°{i}]\n \nOpportunity detected!\n \nExcepted profit: +{round(change_usd,4)} {endPair}\n \n{min_ask_ex} {min_ask_price}   ->   {max_bid_price} {max_bid_ex}\nTime elapsed: {time.strftime('%H:%M:%S', time.gmtime(time.time()-st))}\nSession total profit: {round(total_change_usd,4)} {endPair}\nFees paid: {round(fees_usd,4)} {endPair}      {round(fees_crypto,4)} {currentPair.split('/')[0]}\n \n--------BALANCES---------\n \n {ex_balances}")
 
             actual_max_bid_price, actual_min_ask_price = await execute_trades(ex,max_bid_ex,min_ask_ex,currentPair,crypto_per_transaction,max_bid_price,min_ask_price)
@@ -332,7 +334,7 @@ async def symbol_loop(exchange, symbol):
 
             if change_usd != actual_change_usd:
                 printandtelegram(f"{get_time()} Filled price is different than excepted price (most of the time due to ping-delay). Profit excepted: {(Fore.RED if change_usd < 0 else Fore.GREEN) if change_usd!=0 else Style.RESET_ALL}{change_usd} {endPair}{Style.RESET_ALL} | Actual profit: {(Fore.RED if actual_change_usd < 0 else Fore.GREEN) if actual_change_usd!=0 else Style.RESET_ALL}{actual_change_usd} {endPair}")
-                append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: Filled price is different than excepted price (most of the time due to ping delay). Profit excepted: {change_usd} {endPair} | Actual profit: {actual_change_usd} {endPair}')
+                append_new_line(logs_path,f'{get_time_blank()} INFO: Filled price is different than excepted price (most of the time due to ping delay). Profit excepted: {change_usd} {endPair} | Actual profit: {actual_change_usd} {endPair}')
 
             crypto[min_ask_ex] += crypto_per_transaction
             usd[min_ask_ex] -= (crypto_per_transaction / (1-fees[min_ask_ex]['quote'])) * actual_min_ask_price * (1+fees[min_ask_ex]['base'])
@@ -393,7 +395,7 @@ print(" \n")
 run(main())
 
 printandtelegram(f"{get_time()} Selling all {sys.argv[1][:len(sys.argv[1])-5]} for {endPair} on {echanges_str}.")
-append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: selling all {sys.argv[1][:len(sys.argv[1])-5]} for {endPair} on {echanges_str}.')
+append_new_line(logs_path,f'{get_time_blank()} INFO: selling all {sys.argv[1][:len(sys.argv[1])-5]} for {endPair} on {echanges_str}.')
 
 for exc in crypto:
     order = ex[exc].createMarketSellOrder(currentPair,crypto[exc])
@@ -429,9 +431,9 @@ if delta_neutral:
     try:
         shex.createMarketBuyOrder(currentPair+f":{endPair}",usd_to_short,{"reduceOnly": True})
         printandtelegram(f"{get_time()} Successfully closed {shex.id} short order.")
-        append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: successfully closed {shex.id} short order.')
+        append_new_line(logs_path,f'{get_time_blank()} INFO: successfully closed {shex.id} short order.')
     except Exception as e:
         printerror(m=f"cannot close short order on {shex.id}: {e}. The bot will continue to run, but please close the short order manually to avoid losses")
 
 printandtelegram(f"{get_time()} Session with {currentPair} finished.\n{get_time()} Total account change since start: {total_session_profit_usd} {endPair}")
-append_new_line('logs/logs.txt',f'{get_time_blank()} INFO: session ended. Total account change since start: {total_session_profit_usd} {endPair}')
+append_new_line(logs_path,f'{get_time_blank()} INFO: session ended. Total account change since start: {total_session_profit_usd} {endPair}')

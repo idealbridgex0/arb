@@ -3,6 +3,7 @@ import time
 import ccxt.pro
 import ccxt
 import sys
+import os
 from colorama import Fore, Back, Style,init
 import threading
 init()
@@ -16,6 +17,7 @@ i=0
 z=0
 
 stop_requested = False
+logs_path = os.path.join(current_dir, 'logs/logs.txt')
 
 def listen_for_exit():
     global stop_requested
@@ -163,7 +165,7 @@ async def pair_loop(exchange, pair):
             sys.stdout.write("\033[K")
             print(f"{get_time()} Manual rebalance requested. Breaking.")
             await exchange.close()
-            append_new_line('logs/logs.txt',f"{get_time_blank()} INFO: Manual rebalance requested. Breaking.")
+            append_new_line(logs_path,f"{get_time_blank()} INFO: Manual rebalance requested. Breaking.")
             timeout -= 100000000000
             break
         orderbook = await fetch_orderbook(exchange,pair)
@@ -285,8 +287,10 @@ for exc in crypto:
 total_usdt_balance = 0
 for n in echanges_str:
     total_usdt_balance += usd[n]
+    
+real_balance_path = os.path.join(current_dir, 'real_balance.txt')
 
-with open('real_balance.txt', 'r+') as balance_file:
+with open(real_balance_path, 'r+') as balance_file:
     old_balance = float(balance_file.read())
     balance_file.seek(0)
     balance_file.write(str(total_usdt_balance))
