@@ -13,6 +13,7 @@ from exchange_config import *
 stop_requested = False
 current_dir = os.path.dirname(os.path.abspath(__file__))
 logs_path = os.path.join(current_dir, 'logs/logs.txt')
+new_opportunity_path = os.path.join(current_dir, 'logs/opportunities.txt')
 
 def listen_for_exit():
     global stop_requested
@@ -357,7 +358,7 @@ async def symbol_loop(exchange, symbol):
             ex_bal_one_liner = ex_balances.replace('\n', ' || ')
             ex_bal_after_one_liner = ex_balances_after.replace('\n', ' || ')
 
-            append_new_line('logs/opportunities.txt',f"-----------------------|START|-----------------------\nSymbol: {symbol}\nTimestamp: {time.time()}\nProfit USD: {actual_change_usd}\nExcepted profit USD: {change_usd}\nBuy exchange: {min_ask_ex}\nExcepted buy price: {min_ask_price}\nBuy price: {actual_min_ask_price}\nSell exchange: {max_bid_ex}\nExcepted sell price: {max_bid_price}\nSell price: {actual_max_bid_price}\nExchanges balances (before): {ex_bal_one_liner}\nExchanges balances after: {ex_bal_after_one_liner}\n------------------------|END|------------------------")
+            append_new_line(new_opportunity_path,f"-----------------------|START|-----------------------\nSymbol: {symbol}\nTimestamp: {time.time()}\nProfit USD: {actual_change_usd}\nExcepted profit USD: {change_usd}\nBuy exchange: {min_ask_ex}\nExcepted buy price: {min_ask_price}\nBuy price: {actual_min_ask_price}\nSell exchange: {max_bid_ex}\nExcepted sell price: {max_bid_price}\nSell price: {actual_max_bid_price}\nExchanges balances (before): {ex_bal_one_liner}\nExchanges balances after: {ex_bal_after_one_liner}\n------------------------|END|------------------------")
 
         else:
             for count in range(0,1):
