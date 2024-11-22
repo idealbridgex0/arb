@@ -10,11 +10,11 @@ sys.stdout.reconfigure(encoding="utf-8")
 print('''
                                                                                                                      
                                                                                                                      
- FFFFF    AAAAA   M     M
- F       A     A  MM   MM
- FFFF    AAAAAAA  M M M M
- F       A     A  M  M  M
- F       A     A  M     M
+ A    RRRR   BBBB  
+A A   R   R  B   B 
+AAA   RRRR   BBBB  
+A A   R  R   B   B  
+A A   R   R  BBBB  
                                                                                                                      
                                                                                                                      ''')
 args = sys.argv
