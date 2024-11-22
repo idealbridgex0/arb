@@ -21,15 +21,15 @@
 
   cd fam-arbitrage-bot
 
-3. Install the requirements to run the arbitrage system
+3. Build as Package
 
-  pip install  -r requirements.txt
+  pip install  -e .
 
 4. Set your configuration details in exchange_config.py
 
 5. Run with:
 
-  Python run.py
+  Python -m arbitrage.run 
 
 ```
 
