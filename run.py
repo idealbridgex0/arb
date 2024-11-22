@@ -23,7 +23,6 @@ main_path = os.path.join(current_dir, "main.py")
 logs_path = os.path.join(current_dir, "logs/logs.txt")
 
 print(f"**************** {fake_money_path}")
-s
 try:
     if len(sys.argv) < 3:
         input_list = ["mode (fake-money or real)", "renewal period (in minutes)", "balance to use", "symbol", "exchanges list separated without space with commas (,)"]
