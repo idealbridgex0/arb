@@ -8,7 +8,7 @@ import os
 from colorama import Fore, Back, Style,init
 import threading
 init()
-from exchange_config import *
+from arb_package.exchange_config import *
 
 stop_requested = False
 current_dir = os.path.dirname(os.path.abspath(__file__))
