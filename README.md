@@ -29,7 +29,8 @@
 
 5. Run with:
 
-  Python run.py
+  cd ..
+  Python -m arb.run
 ```
 
 ## How to add an exchange?
