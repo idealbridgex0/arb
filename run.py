@@ -1,5 +1,5 @@
 import subprocess
-from exchange_config import *
+from arb_package.exchange_config import *
 import sys, os
 sys.stdin.reconfigure(encoding="utf-8")
 sys.stdout.reconfigure(encoding="utf-8")
